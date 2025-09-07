@@ -5,6 +5,9 @@ Production:
     uv run fastapi run src/main.py
 
 See https://localhost:8000/docs for the API documentation.
+
+wget -O phonikud-1.0.int8.onnx https://huggingface.co/thewh1teagle/phonikud-onnx/resolve/main/phonikud-1.0.int8.onnx
+wget -O ref3.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/ref3.wav
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
