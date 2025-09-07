@@ -493,6 +493,42 @@ audio {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+.input-with-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-toggle input {
+    padding-right: 40px;
+}
+
+.toggle-visibility-btn {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: auto;
+    height: auto;
+    box-shadow: none;
+    transform: none;
+}
+
+.toggle-visibility-btn:hover {
+    color: #475569;
+    background: #f1f5f9;
+    box-shadow: none;
+    transform: none;
+}
+
 .form-group small {
     display: block;
     margin-top: 6px;
