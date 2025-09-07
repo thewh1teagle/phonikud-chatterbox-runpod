@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TTS Generator</title>
+    <title>Phonikud TTS Generator - Hebrew Text-to-Speech</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="page-header">
+        <h1 class="page-title">Phonikud TTS Generator</h1>
+        <p class="page-subtitle">Hebrew Text-to-Speech with AI</p>
+        <button id="settingsBtn" class="settings-btn">Settings</button>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <h1>TTS Generator</h1>
-            <button id="settingsBtn" class="settings-btn">Settings</button>
-        </div>
-        
         <textarea 
             id="textInput" 
             placeholder="Enter Hebrew text here..."
             dir="rtl">העברית היא שפה עתיקה ומתחדשת, שמחברת בין ההיסטוריה העמוקה של העם לבין החיים המודרניים.</textarea>
+        
+        <p class="diacritics-note">
+            <em>Tip: Use <a href="https://nakdan.dicta.org.il/" target="_blank" rel="noopener noreferrer" class="nakdan-link">Nakdan</a> 
+            for better diacritics. If inputting with diacritics, disable "Add diacritics" below.</em>
+        </p>
         
         <div class="controls">
             <button id="generateBtn" onclick="generateAudio()">Generate Audio</button>
@@ -54,6 +60,22 @@
                 <input type="password" id="apiKeyInput" placeholder="Enter API key for RunPod or other services">
                 <small>Leave empty if no authentication is required</small>
             </div>
+
+            <!-- Share Settings Section -->
+            <div class="form-group">
+                <label style="font-size: 13px; color: #666;">Share Settings:</label>
+                <div style="margin-top: 4px;">
+                    <button type="button" id="shareSettingsBtn" class="btn-secondary" style="font-size: 11px; padding: 4px 8px; margin-right: 6px;">
+                        📋 Copy URL
+                    </button>
+                    <button type="button" id="shareNoApiBtn" class="btn-secondary" style="font-size: 11px; padding: 4px 8px;">
+                        🔗 No API Key
+                    </button>
+                </div>
+                <div class="security-warning" style="margin-top: 6px; padding: 6px; background-color: #fff8e1; border: 1px solid #ffecb3; border-radius: 3px; font-size: 10px; color: #f57c00;">
+                    <strong>⚠️</strong> URLs may contain API key - share with trusted parties only.
+                </div>
+            </div>
             
             <div class="modal-footer">
                 <button id="cancelSettings" class="btn-secondary">Cancel</button>
@@ -61,6 +83,26 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">Powered by 
+                <a href="https://github.com/resemble-ai/chatterbox" target="_blank" rel="noopener noreferrer" class="footer-link">
+                    Chatterbox
+                </a> and 
+                <a href="https://phonikud.github.io" target="_blank" rel="noopener noreferrer" class="footer-link">
+                    Phonikud
+                </a>
+            </p>
+            <a href="https://github.com/thewh1teagle/phonikud-chatterbox-runpod" target="_blank" rel="noopener noreferrer" class="footer-github">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                GitHub
+            </a>
+        </div>
+    </footer>
 
     <script src="settings.js"></script>
     <script src="script.js"></script>
