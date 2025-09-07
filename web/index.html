@@ -38,11 +38,18 @@
                             <span class="no-reference">No reference audio selected</span>
                         </div>
                         <input type="file" id="referenceAudioInput" accept=".wav,.m4a,.mp3,.aac" style="display: none;">
-                        <button type="button" id="selectReferenceBtn" class="btn-secondary btn-small">Select Audio</button>
-                        <button type="button" id="removeReferenceBtn" class="btn-remove btn-small" style="display: none;">Remove</button>
+                        <div class="reference-audio-buttons">
+                            <button type="button" id="selectReferenceBtn" class="btn-secondary btn-small">Select Audio</button>
+                            <button type="button" id="recordBtn" class="btn-secondary btn-small">🎤 Record</button>
+                            <button type="button" id="stopRecordBtn" class="btn-remove btn-small" style="display: none;">⏹ Stop</button>
+                            <button type="button" id="removeReferenceBtn" class="btn-remove btn-small" style="display: none;">Remove</button>
+                        </div>
+                        <div id="recordingStatus" class="recording-status" style="display: none;">
+                            <span id="recordingTimer">Recording... 10s</span>
+                        </div>
                     </div>
                     <audio id="referenceAudioPlayer" controls style="display: none; width: 100%; margin-top: 6px; height: 32px;"></audio>
-                    <small class="reference-audio-help">Upload a reference audio file (max 5MB) to clone the voice. Supports WAV, M4A, MP3, AAC formats.</small>
+                    <small class="reference-audio-help">Upload a reference audio file (max 5MB) or record yourself (max 10 seconds) to clone the voice. Supports WAV, M4A, MP3, AAC formats.</small>
                 </div>
             </div>
             
@@ -68,7 +75,13 @@
             <strong>Processed text:</strong>
             <div id="processedTextContent" style="margin-top: 5px; font-family: 'Arial', sans-serif; direction: rtl;"></div>
         </div>
-        <audio id="audioPlayer" controls autoplay style="display: none;"></audio>
+        <div id="audioPlayerContainer" style="display: none;">
+            <audio id="audioPlayer" controls autoplay style="width: 100%; margin-bottom: 8px;"></audio>
+            <div class="audio-download-section">
+                <button id="downloadAudioBtn" class="btn-secondary btn-small">💾 Download Audio</button>
+                <small class="download-filename" id="downloadFilename" style="margin-left: 8px; color: #64748b; font-size: 11px;"></small>
+            </div>
+        </div>
     </div>
 
     <!-- Settings Modal -->

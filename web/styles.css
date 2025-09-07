@@ -180,9 +180,15 @@ textarea:focus {
 
 .reference-audio-controls {
     display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.reference-audio-buttons {
+    display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 6px;
 }
 
 .reference-audio-status {
@@ -212,6 +218,44 @@ textarea:focus {
     color: #10b981;
     font-weight: bold;
     font-size: 11px;
+}
+
+.recording-status {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recording-status span {
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 500;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.audio-download-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.download-filename {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    flex: 1;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .reference-audio-help {

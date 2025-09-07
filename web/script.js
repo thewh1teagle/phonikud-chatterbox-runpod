@@ -26,6 +26,7 @@ async function generateAudio() {
     const generateBtn = document.getElementById('generateBtn');
     const status = document.getElementById('status');
     const audioPlayer = document.getElementById('audioPlayer');
+    const audioPlayerContainer = document.getElementById('audioPlayerContainer');
     const processedText = document.getElementById('processedText');
     const processedTextContent = document.getElementById('processedTextContent');
     
@@ -39,7 +40,7 @@ async function generateAudio() {
     generateBtn.disabled = true;
     generateBtn.textContent = 'Generating...';
     status.innerHTML = '<div class="loading">Generating audio...</div>';
-    audioPlayer.style.display = 'none';
+    audioPlayerContainer.style.display = 'none';
     processedText.style.display = 'none';
     
     try {
@@ -98,10 +99,18 @@ async function generateAudio() {
         processedTextContent.textContent = data.processed_text;
         processedText.style.display = 'block';
         
+        // Generate a proper filename with timestamp
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
+        const filename = `chatterbox_${timestamp}.m4a`;
+        
         // Play the audio
         audioPlayer.src = audioUrl;
-        audioPlayer.style.display = 'block';
+        audioPlayerContainer.style.display = 'block';
         audioPlayer.play().catch(e => console.log('Autoplay prevented by browser:', e));
+        
+        // Set up download functionality
+        setupAudioDownload(audioBlob, filename);
+        
         status.innerHTML = '<div style="color: #28a745;">Audio generated successfully!</div>';
         
     } catch (error) {
@@ -121,9 +130,50 @@ document.getElementById('textInput').addEventListener('keydown', function(e) {
     }
 });
 
+// Audio download functionality
+function setupAudioDownload(audioBlob, filename) {
+    const downloadBtn = document.getElementById('downloadAudioBtn');
+    const filenameDisplay = document.getElementById('downloadFilename');
+    
+    // Update filename display
+    filenameDisplay.textContent = filename;
+    
+    // Remove previous event listener if any
+    const newDownloadBtn = downloadBtn.cloneNode(true);
+    downloadBtn.parentNode.replaceChild(newDownloadBtn, downloadBtn);
+    
+    // Add new event listener
+    newDownloadBtn.addEventListener('click', () => {
+        const url = URL.createObjectURL(audioBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show feedback
+        const status = document.getElementById('status');
+        if (status) {
+            status.innerHTML = '<div style="color: #28a745;">Audio downloaded successfully!</div>';
+            setTimeout(() => {
+                status.innerHTML = '';
+            }, 2000);
+        }
+    });
+}
+
 // Reference Audio Management Functions
 let referenceAudioData = null;
 let referenceAudioFileName = null;
+
+// Recording Variables
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordingTimer = null;
+let recordingTimeLeft = 10;
 
 function initializeReferenceAudio() {
     // Load reference audio from localStorage if available
@@ -149,6 +199,8 @@ function initializeReferenceAudio() {
 
     // Set up event listeners
     const selectReferenceBtn = document.getElementById('selectReferenceBtn');
+    const recordBtn = document.getElementById('recordBtn');
+    const stopRecordBtn = document.getElementById('stopRecordBtn');
     const removeReferenceBtn = document.getElementById('removeReferenceBtn');
     const referenceAudioInput = document.getElementById('referenceAudioInput');
     const toggleBtn = document.getElementById('referenceAudioToggle');
@@ -158,6 +210,8 @@ function initializeReferenceAudio() {
         referenceAudioInput.click();
     });
 
+    recordBtn.addEventListener('click', startRecording);
+    stopRecordBtn.addEventListener('click', stopRecording);
     removeReferenceBtn.addEventListener('click', removeReferenceAudio);
 
     referenceAudioInput.addEventListener('change', handleReferenceAudioSelection);
@@ -260,10 +314,158 @@ function removeReferenceAudio() {
     audioPlayer.src = '';
     audioPlayer.style.display = 'none';
     
+    // Reset recording UI if recording was in progress
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        stopRecording();
+    }
+    
+    // Hide remove button
+    document.getElementById('removeReferenceBtn').style.display = 'none';
+    
     // Update UI
     updateReferenceAudioStatus(null);
 }
 
 function getReferenceAudioData() {
     return referenceAudioData;
+}
+
+// Recording Functions
+async function startRecording() {
+    try {
+        // Request microphone access
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        // Reset recording state
+        recordedChunks = [];
+        recordingTimeLeft = 10;
+        
+        // Create MediaRecorder
+        mediaRecorder = new MediaRecorder(stream);
+        
+        mediaRecorder.ondataavailable = function(event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        };
+        
+        mediaRecorder.onstop = function() {
+            // Stop all tracks to release the microphone
+            stream.getTracks().forEach(track => track.stop());
+            processRecordedAudio();
+        };
+        
+        // Start recording
+        mediaRecorder.start();
+        
+        // Update UI
+        updateRecordingUI(true);
+        
+        // Start countdown timer
+        startRecordingTimer();
+        
+    } catch (error) {
+        console.error('Error accessing microphone:', error);
+        alert('Could not access microphone. Please ensure you have granted microphone permissions and try again.');
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+    }
+    
+    // Clear timer
+    if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+    }
+    
+    // Update UI
+    updateRecordingUI(false);
+}
+
+function startRecordingTimer() {
+    const timerElement = document.getElementById('recordingTimer');
+    
+    recordingTimer = setInterval(() => {
+        recordingTimeLeft--;
+        timerElement.textContent = `Recording... ${recordingTimeLeft}s`;
+        
+        if (recordingTimeLeft <= 0) {
+            stopRecording();
+        }
+    }, 1000);
+}
+
+function updateRecordingUI(isRecording) {
+    const recordBtn = document.getElementById('recordBtn');
+    const stopRecordBtn = document.getElementById('stopRecordBtn');
+    const selectReferenceBtn = document.getElementById('selectReferenceBtn');
+    const recordingStatus = document.getElementById('recordingStatus');
+    const removeBtn = document.getElementById('removeReferenceBtn');
+    
+    if (isRecording) {
+        recordBtn.style.display = 'none';
+        stopRecordBtn.style.display = 'inline-block';
+        selectReferenceBtn.disabled = true;
+        removeBtn.style.display = 'none';
+        recordingStatus.style.display = 'block';
+    } else {
+        recordBtn.style.display = 'inline-block';
+        stopRecordBtn.style.display = 'none';
+        selectReferenceBtn.disabled = false;
+        recordingStatus.style.display = 'none';
+    }
+}
+
+function processRecordedAudio() {
+    if (recordedChunks.length === 0) {
+        alert('No audio was recorded. Please try again.');
+        return;
+    }
+    
+    // Create blob from recorded chunks
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const arrayBuffer = e.target.result;
+        const bytes = new Uint8Array(arrayBuffer);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        const base64Data = btoa(binary);
+        
+        // Store the recorded audio
+        referenceAudioData = base64Data;
+        referenceAudioFileName = `recorded_audio_${new Date().toISOString().slice(0, 19).replace(/[:-]/g, '')}.webm`;
+        
+        // Save to localStorage
+        localStorage.setItem('referenceAudioData', base64Data);
+        localStorage.setItem('referenceAudioFileName', referenceAudioFileName);
+        
+        // Set up audio player
+        const audioPlayer = document.getElementById('referenceAudioPlayer');
+        const dataUrl = URL.createObjectURL(blob);
+        audioPlayer.src = dataUrl;
+        audioPlayer.style.display = 'block';
+        
+        // Update UI
+        updateReferenceAudioStatus(referenceAudioFileName + ' (recorded)');
+        document.getElementById('removeReferenceBtn').style.display = 'inline-block';
+        
+        // Show success message
+        const status = document.getElementById('status');
+        if (status) {
+            status.innerHTML = '<div style="color: #28a745;">Voice recorded successfully!</div>';
+            setTimeout(() => {
+                status.innerHTML = '';
+            }, 3000);
+        }
+    };
+    
+    reader.readAsArrayBuffer(blob);
 }
