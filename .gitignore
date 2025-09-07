@@ -12,3 +12,5 @@ wheels/
 *.wav
 .DS_Store
 *.onnx
+*.m4a
+*.ogg
