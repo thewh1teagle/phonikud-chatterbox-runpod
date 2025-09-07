@@ -24,15 +24,11 @@ body {
 }
 
 .page-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: #0f172a;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2563eb;
     margin: 0 0 8px 0;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
 }
 
 .page-subtitle {
@@ -99,10 +95,181 @@ textarea:focus {
     text-decoration: underline;
 }
 
-.controls {
+/* Options Row */
+.options-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+/* Reference Audio Section Styles */
+.reference-audio-section {
+    flex: 2;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.reference-audio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.reference-audio-header-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 6px;
+}
+
+.reference-audio-checkbox {
+    width: 14px;
+    height: 14px;
+    accent-color: #3b82f6;
+}
+
+.reference-audio-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    margin: 0;
+    cursor: pointer;
+}
+
+.reference-audio-toggle {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 10px;
+    min-width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reference-audio-toggle:hover {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+.reference-audio-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(-180deg);
+}
+
+.reference-audio-collapse {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding-top 0.3s ease;
+}
+
+.reference-audio-collapse.expanded {
+    max-height: 250px;
+    padding-top: 8px;
+}
+
+.reference-audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.reference-audio-status {
+    flex: 1;
+    min-height: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.no-reference {
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.has-reference {
+    color: #059669;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.has-reference::before {
+    content: "✓";
+    color: #10b981;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.reference-audio-help {
+    display: block;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.3;
+    margin-top: 3px;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 6px;
+}
+
+.btn-remove {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    font-weight: 500;
+    box-shadow: none;
+    min-width: auto;
+}
+
+.btn-remove:hover {
+    background: #fecaca;
+    color: #b91c1c;
+    border-color: #f87171;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 2px rgba(220, 38, 38, 0.1);
+}
+
+/* Diacritics Section Styles */
+.diacritics-section {
+    flex: 1;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 6px 0 2px 0;
+}
+
+#generateBtn {
+    padding: 14px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25);
 }
 
 button {
@@ -478,5 +645,10 @@ audio {
     .footer-github {
         font-size: 12px;
         padding: 5px 10px;
+    }
+    
+    .options-row {
+        flex-direction: column;
+        gap: 8px;
     }
 }

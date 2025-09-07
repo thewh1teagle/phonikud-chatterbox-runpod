@@ -19,18 +19,48 @@
             placeholder="Enter Hebrew text here..."
             dir="rtl">העברית היא שפה עתיקה ומתחדשת, שמחברת בין ההיסטוריה העמוקה של העם לבין החיים המודרניים.</textarea>
         
+        <!-- Options Row -->
+        <div class="options-row">
+            <!-- Reference Audio Section -->
+            <div class="reference-audio-section">
+                <div class="reference-audio-header">
+                    <div class="reference-audio-header-left">
+                        <input type="checkbox" id="referenceAudioEnabled" class="reference-audio-checkbox">
+                        <label for="referenceAudioEnabled" class="reference-audio-label">Voice Cloning (Optional)</label>
+                    </div>
+                    <button type="button" id="referenceAudioToggle" class="reference-audio-toggle" aria-expanded="false">
+                        <span class="toggle-icon">▼</span>
+                    </button>
+                </div>
+                <div id="referenceAudioCollapse" class="reference-audio-collapse">
+                    <div class="reference-audio-controls">
+                        <div id="referenceAudioStatus" class="reference-audio-status">
+                            <span class="no-reference">No reference audio selected</span>
+                        </div>
+                        <input type="file" id="referenceAudioInput" accept=".wav,.m4a,.mp3,.aac" style="display: none;">
+                        <button type="button" id="selectReferenceBtn" class="btn-secondary btn-small">Select Audio</button>
+                        <button type="button" id="removeReferenceBtn" class="btn-remove btn-small" style="display: none;">Remove</button>
+                    </div>
+                    <audio id="referenceAudioPlayer" controls style="display: none; width: 100%; margin-top: 6px; height: 32px;"></audio>
+                    <small class="reference-audio-help">Upload a reference audio file (max 5MB) to clone the voice. Supports WAV, M4A, MP3, AAC formats.</small>
+                </div>
+            </div>
+            
+            <div class="diacritics-section">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="diacriticsCheckbox" checked>
+                    <label for="diacriticsCheckbox">Add diacritics</label>
+                </div>
+            </div>
+        </div>
+        
         <p class="diacritics-note">
             <em>Tip: Use <a href="https://nakdan.dicta.org.il/" target="_blank" rel="noopener noreferrer" class="nakdan-link">Nakdan</a> 
-            for better diacritics. If inputting with diacritics, disable "Add diacritics" below.</em>
+            for better diacritics. If inputting with diacritics, disable "Add diacritics" above.</em>
         </p>
         
         <div class="controls">
             <button id="generateBtn" onclick="generateAudio()">Generate Audio</button>
-            
-            <div class="checkbox-container">
-                <input type="checkbox" id="diacriticsCheckbox" checked>
-                <label for="diacriticsCheckbox">Add diacritics</label>
-            </div>
         </div>
         
         <div id="status"></div>
