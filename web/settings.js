@@ -37,7 +37,7 @@ class Settings {
             apiKey: ''
         };
         this.load();
-        this.loadFromUrlParams();
+        this.urlParamsLoaded = false;
         this.initModal();
     }
 
@@ -122,6 +122,12 @@ class Settings {
     }
 
     bindEvents() {
+        // Load URL parameters now that both scripts are loaded
+        if (!this.urlParamsLoaded) {
+            this.loadFromUrlParams();
+            this.urlParamsLoaded = true;
+        }
+        
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsModal = document.getElementById('settingsModal');
         const closeModal = document.getElementById('closeSettings');
