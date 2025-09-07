@@ -5,7 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "fastapi[standard]>=0.116.1",
     "phonikud-chatterbox",
+    "pydub>=0.25.1",
+    "soundfile>=0.13.1",
 ]
 
 [tool.uv.sources]
