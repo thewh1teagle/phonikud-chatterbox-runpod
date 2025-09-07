@@ -6,6 +6,15 @@ docker run -p 8000:8000 thewh1teagle/phonikud-chatterbox
 docker push thewh1teagle/phonikud-chatterbox
 ```
 
+## Build (amd64)
+
+```console
+docker buildx build \
+  --platform linux/amd64 \
+  -t thewh1teagle/phonikud-chatterbox:latest \
+  .
+```
+
 ## Test
 
 ```console
