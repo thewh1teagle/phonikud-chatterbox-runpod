@@ -2,7 +2,7 @@
 Development:
     uv run fastapi dev src/main.py
 Production:
-    uv run fastapi run src/main.py
+    uv run fastapi run src/main.py --host 0.0.0.0 --port 38083
 
 See https://localhost:8000/docs for the API documentation.
 
