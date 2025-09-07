@@ -81,6 +81,11 @@ class Settings {
         if (hasUrlOverrides) {
             this.save();
             
+            // Update the BASE_URL in script.js if it exists
+            if (window.updateBaseUrl) {
+                window.updateBaseUrl(this.settings.baseUrl);
+            }
+            
             // Provide visual feedback that settings were loaded from URL
             setTimeout(() => {
                 const status = document.getElementById('status');

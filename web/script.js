@@ -6,10 +6,16 @@ function updateBaseUrl(newUrl) {
     BASE_URL = newUrl;
 }
 
+// Make the function available immediately for settings.js
+window.updateBaseUrl = updateBaseUrl;
+
 // Load settings on startup
 document.addEventListener('DOMContentLoaded', () => {
     if (window.appSettings) {
-        BASE_URL = window.appSettings.get('baseUrl');
+        const settingsBaseUrl = window.appSettings.get('baseUrl');
+        if (settingsBaseUrl) {
+            BASE_URL = settingsBaseUrl;
+        }
     }
     initializeReferenceAudio();
 });
@@ -64,7 +70,10 @@ async function generateAudio() {
             requestBody.reference_audio_base64 = referenceAudioData;
         }
 
-        const response = await fetch(`${BASE_URL}/tts`, {
+        // Use current settings for base URL to ensure we have the latest value
+        const currentBaseUrl = window.appSettings ? window.appSettings.get('baseUrl') : BASE_URL;
+        
+        const response = await fetch(`${currentBaseUrl}/tts`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(requestBody)
