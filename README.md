@@ -1,6 +1,6 @@
 # phonikud-chatterbox-runpod
 
 
-[![RunPod](https://api.runpod.io/badge/ivrit-ai/runpod-serverless)](https://www.runpod.io/console/hub/ivrit-ai/runpod-serverless)
+[![Runpod](https://api.runpod.io/badge/thewh1teagle/phonikud-chatterbox-runpod)](https://console.runpod.io/hub/thewh1teagle/phonikud-chatterbox-runpod)
 
 A template for quickly deploying TTs API.
