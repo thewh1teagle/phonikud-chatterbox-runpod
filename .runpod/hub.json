@@ -1,0 +1,15 @@
+{
+    "title": "Phonikud Chatterbox TTS",
+    "description": "Hebrew TTS based on Phonikud Chatterbox",
+    "type": "serverless",
+    "category": "audio",
+    "iconUrl": "https://github.com/thewh1teagle/phonikud-chatterbox/blob/main/icon.png",
+    "config": {
+      "runsOn": "GPU",
+      "containerDiskInGb": 20,
+      "gpuIds": "AMPERE_16",
+      "gpuCount": 1,
+      "presets": [],
+      "env": []
+    }
+  }
