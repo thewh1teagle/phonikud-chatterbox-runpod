@@ -535,10 +535,16 @@ audio {
 
 .footer-content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 16px;
+    align-items: center;
 }
 
 .footer-text {
@@ -633,9 +639,9 @@ audio {
         padding: 20px 0;
     }
     
-    .footer-content {
+    .footer-links {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
     }
     
     .footer-text {
