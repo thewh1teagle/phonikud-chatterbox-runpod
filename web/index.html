@@ -95,7 +95,7 @@
             
             <div class="form-group">
                 <label for="baseUrlInput">Base URL:</label>
-                <input type="text" id="baseUrlInput" placeholder="http://localhost:8000">
+                <input type="text" id="baseUrlInput" placeholder="http://localhost:8000 (local testing) or https://api.runpod.ai/v2/ENDPOINT_ID">
                 <small>The base URL for the TTS API server. For RunPod, find your endpoint at 
                     <a href="https://console.runpod.io/serverless" target="_blank" rel="noopener noreferrer" class="footer-link">RunPod Serverless</a> 
                     by clicking on your endpoint.
@@ -113,7 +113,7 @@
                         </svg>
                     </button>
                 </div>
-                <small>Leave empty if no authentication is required. For RunPod, you can find your API key in the 
+                <small><strong>Leave empty for local testing</strong>. Only required for RunPod mode - find your API key in the 
                     <a href="https://console.runpod.io/user/settings" target="_blank" rel="noopener noreferrer" class="footer-link">RunPod Console Settings</a>.
                 </small>
             </div>

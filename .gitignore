@@ -14,3 +14,4 @@ wheels/
 *.onnx
 *.m4a
 *.ogg
+.runpod_jobs*

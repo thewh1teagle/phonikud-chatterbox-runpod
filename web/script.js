@@ -1,4 +1,4 @@
-// Configuration
+// Configuration - Default to localhost for local testing
 let BASE_URL = 'http://localhost:8000';
 
 // Update BASE_URL from settings when available
@@ -38,8 +38,8 @@ async function generateAudio() {
     
     // Show loading state
     generateBtn.disabled = true;
-    generateBtn.textContent = 'Generating...';
-    status.innerHTML = '<div class="loading">Generating audio...</div>';
+    generateBtn.textContent = 'Submitting job...';
+    status.innerHTML = '<div class="loading">Submitting job to RunPod...</div>';
     audioPlayerContainer.style.display = 'none';
     processedText.style.display = 'none';
     
@@ -48,46 +48,122 @@ async function generateAudio() {
             'Content-Type': 'application/json',
         };
         
-        // Add API key if configured
-        if (window.appSettings) {
-            const apiKey = window.appSettings.get('apiKey');
-            if (apiKey) {
-                headers['Authorization'] = `Bearer ${apiKey}`;
-            }
-        }
-        
-        // Prepare request body
-        const requestBody = {
-            text: text,
-            language_id: 'he',
-            audio_prompt_path: 'ref3.wav',
-            add_diacritics: diacriticsCheckbox.checked
-        };
-
-        // Add reference audio if available and enabled
-        const referenceAudioData = getReferenceAudioData();
-        const referenceAudioEnabled = document.getElementById('referenceAudioEnabled').checked;
-        if (referenceAudioData && referenceAudioEnabled) {
-            requestBody.reference_audio_base64 = referenceAudioData;
-        }
-
         // Use current settings for base URL to ensure we have the latest value
         const currentBaseUrl = window.appSettings ? window.appSettings.get('baseUrl') : BASE_URL;
         
-        const response = await fetch(`${currentBaseUrl}/tts`, {
-            method: 'POST',
-            headers: headers,
-            body: JSON.stringify(requestBody)
-        });
+        // Check if we're in local testing mode
+        const isLocalMode = currentBaseUrl.includes('localhost') || currentBaseUrl.includes('127.0.0.1');
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        let result;
+        
+        if (isLocalMode) {
+            // Local testing mode - direct API call without job queue
+            console.log('Running in local testing mode');
+            status.innerHTML = '<div class="loading">🧪 Local testing mode - Processing directly...</div>';
+            
+            // Prepare request body for local testing
+            const requestBody = {
+                input: {
+                    text: text,
+                    language_id: 'he',
+                    audio_prompt_path: 'ref3.wav',
+                    add_diacritics: diacriticsCheckbox.checked
+                }
+            };
+
+            // Add reference audio if available and enabled
+            const referenceAudioData = getReferenceAudioData();
+            const referenceAudioEnabled = document.getElementById('referenceAudioEnabled').checked;
+            if (referenceAudioData && referenceAudioEnabled) {
+                requestBody.input.reference_audio_base64 = referenceAudioData;
+            }
+
+            // Call local server directly with /runsync
+            const response = await fetch(`${currentBaseUrl}/runsync`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            }
+            
+            const responseData = await response.json();
+            
+            if (responseData.status === 'COMPLETED' && responseData.output) {
+                result = responseData.output;
+            } else if (responseData.error) {
+                throw new Error(responseData.error);
+            } else {
+                throw new Error('Unexpected response format from local server');
+            }
+            
+        } else {
+            // RunPod production mode - requires API key and job queue
+            let apiKey = null;
+            if (window.appSettings) {
+                apiKey = window.appSettings.get('apiKey');
+            }
+            
+            if (!apiKey) {
+                throw new Error('RunPod API key is required. Please set it in the settings.');
+            }
+            
+            headers['Authorization'] = `Bearer ${apiKey}`;
+            
+            // Prepare request body for RunPod
+            const requestBody = {
+                input: {
+                    text: text,
+                    language_id: 'he',
+                    audio_prompt_path: 'ref3.wav',
+                    add_diacritics: diacriticsCheckbox.checked
+                }
+            };
+
+            // Add reference audio if available and enabled
+            const referenceAudioData = getReferenceAudioData();
+            const referenceAudioEnabled = document.getElementById('referenceAudioEnabled').checked;
+            if (referenceAudioData && referenceAudioEnabled) {
+                requestBody.input.reference_audio_base64 = referenceAudioData;
+            }
+            
+            // Submit job to RunPod
+            const response = await fetch(`${currentBaseUrl}/run`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+            }
+            
+            const jobData = await response.json();
+            const jobId = jobData.id;
+            
+            if (!jobId) {
+                throw new Error('No job ID returned from RunPod');
+            }
+            
+            console.log('Job submitted:', jobId);
+            
+            // Start polling for job completion
+            generateBtn.textContent = 'Processing...';
+            status.innerHTML = '<div class="loading">Processing job... This may take a while.</div>';
+            
+            result = await pollJobStatus(jobId, currentBaseUrl, apiKey);
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
         }
         
-        const data = await response.json();
-        
         // Convert base64 to blob for audio playback
-        const audioBytes = atob(data.audio_base64);
+        const audioBytes = atob(result.audio_base64);
         const audioArray = new Uint8Array(audioBytes.length);
         for (let i = 0; i < audioBytes.length; i++) {
             audioArray[i] = audioBytes.charCodeAt(i);
@@ -96,7 +172,7 @@ async function generateAudio() {
         const audioUrl = URL.createObjectURL(audioBlob);
         
         // Show the processed text
-        processedTextContent.textContent = data.processed_text;
+        processedTextContent.textContent = result.processed_text;
         processedText.style.display = 'block';
         
         // Generate a proper filename with timestamp
@@ -121,6 +197,65 @@ async function generateAudio() {
         generateBtn.disabled = false;
         generateBtn.textContent = 'Generate Audio';
     }
+}
+
+// Poll job status until completion
+async function pollJobStatus(jobId, baseUrl, apiKey, maxAttempts = 60, pollInterval = 2000) {
+    let attempts = 0;
+    
+    while (attempts < maxAttempts) {
+        try {
+            const response = await fetch(`${baseUrl}/status/${jobId}`, {
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const statusData = await response.json();
+            console.log(`Job ${jobId} status:`, statusData.status);
+            
+            // Update status message based on job status
+            const status = document.getElementById('status');
+            switch (statusData.status) {
+                case 'IN_QUEUE':
+                    status.innerHTML = '<div class="loading">Job is in queue...</div>';
+                    break;
+                case 'IN_PROGRESS':
+                    status.innerHTML = '<div class="loading">Job is processing...</div>';
+                    break;
+                case 'COMPLETED':
+                    if (statusData.output) {
+                        return statusData.output;
+                    } else {
+                        throw new Error('Job completed but no output received');
+                    }
+                case 'FAILED':
+                    const errorMsg = statusData.error || 'Job failed with unknown error';
+                    throw new Error(`Job failed: ${errorMsg}`);
+                default:
+                    console.log('Unknown job status:', statusData.status);
+            }
+            
+            attempts++;
+            
+            // Wait before next poll
+            await new Promise(resolve => setTimeout(resolve, pollInterval));
+            
+        } catch (error) {
+            console.error('Error polling job status:', error);
+            if (attempts >= maxAttempts - 1) {
+                throw error;
+            }
+            attempts++;
+            await new Promise(resolve => setTimeout(resolve, pollInterval));
+        }
+    }
+    
+    throw new Error(`Job polling timeout after ${maxAttempts} attempts`);
 }
 
 // Allow Enter key to trigger generation
