@@ -23,6 +23,7 @@ RUN uv sync --frozen
 RUN wget -O phonikud-1.0.int8.onnx https://huggingface.co/thewh1teagle/phonikud-onnx/resolve/main/phonikud-1.0.int8.onnx
 RUN wget -O ref3.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/ref3.wav
 
-EXPOSE 8000
+# RunPod serverless doesn't need exposed ports
 
-CMD ["uv", "run", "fastapi", "run", "src/main.py", "--host", "0.0.0.0", "--port", "8000"]
+# Run the RunPod serverless handler
+CMD ["uv", "run", "python", "src/main.py"]
