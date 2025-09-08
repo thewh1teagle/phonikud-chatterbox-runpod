@@ -327,3 +327,5 @@ class Settings {
 
 // Initialize settings
 const appSettings = new Settings();
+// Make settings available globally
+window.appSettings = appSettings;
