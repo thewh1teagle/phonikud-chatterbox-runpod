@@ -68,3 +68,13 @@ Use the hosted interface: **https://thewh1teagle.github.io/phonikud-chatterbox-r
 - **Async**: `POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/run`
 - **Sync**: `POST https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/runsync`
 - **Status**: `GET https://api.runpod.ai/v2/YOUR_ENDPOINT_ID/status/JOB_ID`
+
+
+To test locally start Brave with Cors disabled
+
+```console
+ /Applications/Brave\ Browser.app/Contents/MacOS/Brave\ Browser \
+  --disable-web-security \
+  --disable-features=IsolateOrigins,site-per-process \
+  --user-data-dir="/tmp/brave_dev"
+```
