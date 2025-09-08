@@ -21,7 +21,7 @@ RUN uv sync --frozen
 
 # Download model files if not included
 RUN wget -O phonikud-1.0.int8.onnx https://huggingface.co/thewh1teagle/phonikud-onnx/resolve/main/phonikud-1.0.int8.onnx
-RUN wget -O ref3.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/ref3.wav
+RUN wget -O female1.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/female1.wav
 
 # Cache Chatterbox models to avoid download at runtime
 RUN uv run python -c "from chatterbox.tts import ChatterboxTTS; from chatterbox.mtl_tts import ChatterboxMultilingualTTS; ChatterboxTTS.from_pretrained('cpu'); ChatterboxMultilingualTTS.from_pretrained('cpu'); print('Models cached successfully')"

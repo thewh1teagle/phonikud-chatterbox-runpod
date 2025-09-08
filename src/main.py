@@ -2,7 +2,7 @@
 RunPod Serverless TTS Handler
 
 wget -O phonikud-1.0.int8.onnx https://huggingface.co/thewh1teagle/phonikud-onnx/resolve/main/phonikud-1.0.int8.onnx
-wget -O ref3.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/ref3.wav
+wget -O female1.wav https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/female1.wav
 """
 import runpod
 from tts import TTS
@@ -17,7 +17,7 @@ import re
 
 # Initialize models (loaded once when container starts, outside the handler)
 print("Loading TTS models...")
-tts_model = TTS(phonikud_model_path="phonikud-1.0.int8.onnx", chatterbox_model_path="ref3.wav")
+tts_model = TTS(phonikud_model_path="phonikud-1.0.int8.onnx", chatterbox_model_path="female1.wav")
 phonikud_model = Phonikud("phonikud-1.0.int8.onnx")
 print("Models loaded successfully!")
 
@@ -29,7 +29,7 @@ def handler(job):
     {
         "text": "שלום עולם",
         "language_id": "he",
-        "audio_prompt_path": "ref3.wav",
+        "audio_prompt_path": "female1.wav",
         "add_diacritics": true,
         "reference_audio_base64": null  // optional
     }
@@ -45,7 +45,7 @@ def handler(job):
         input_data = job["input"]
         text = input_data.get("text", "שלום עולם")
         language_id = input_data.get("language_id", "he")
-        audio_prompt_path = input_data.get("audio_prompt_path", "ref3.wav")
+        audio_prompt_path = input_data.get("audio_prompt_path", "female1.wav")
         add_diacritics = input_data.get("add_diacritics", True)
         reference_audio_base64 = input_data.get("reference_audio_base64")
         
@@ -69,7 +69,7 @@ def handler(job):
             except Exception as e:
                 print(f"Error processing reference audio: {e}")
                 # Fall back to default reference audio
-                audio_prompt_path = input_data.get("audio_prompt_path", "ref3.wav")
+                audio_prompt_path = input_data.get("audio_prompt_path", "female1.wav")
         
         # Generate audio and get processed text
         wav, _sample_rate = tts_model.create(text, language_id, audio_prompt_path, add_diacritics)

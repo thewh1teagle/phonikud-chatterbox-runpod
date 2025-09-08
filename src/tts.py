@@ -1,6 +1,6 @@
 """
 wget https://huggingface.co/thewh1teagle/phonikud-onnx/resolve/main/phonikud-1.0.int8.onnx
-wget https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/ref3.wav
+wget https://github.com/thewh1teagle/phonikud-chatterbox/releases/download/asset-files-v1/female1.wav
 uv run main.py
 """
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS

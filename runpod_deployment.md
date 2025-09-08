@@ -54,7 +54,7 @@ Users need to configure their RunPod API key in the web interface:
   "input": {
     "text": "שלום עולם",
     "language_id": "he",
-    "audio_prompt_path": "ref3.wav",
+    "audio_prompt_path": "female1.wav",
     "add_diacritics": true,
     "reference_audio_base64": "optional_base64_audio"
   }

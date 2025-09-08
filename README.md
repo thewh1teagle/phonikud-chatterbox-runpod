@@ -50,7 +50,7 @@ Use the hosted interface: **https://thewh1teagle.github.io/phonikud-chatterbox-r
     "text": "שלום עולם",
     "language_id": "he", 
     "add_diacritics": true,
-    "audio_prompt_path": "ref3.wav",
+    "audio_prompt_path": "female1.wav",
     "reference_audio_base64": "optional_base64_audio"
   }
 }

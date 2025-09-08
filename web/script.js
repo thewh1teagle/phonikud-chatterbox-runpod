@@ -66,7 +66,7 @@ async function generateAudio() {
                 input: {
                     text: text,
                     language_id: 'he',
-                    audio_prompt_path: 'ref3.wav',
+                    audio_prompt_path: 'female1.wav',
                     add_diacritics: diacriticsCheckbox.checked
                 }
             };
@@ -118,7 +118,7 @@ async function generateAudio() {
                 input: {
                     text: text,
                     language_id: 'he',
-                    audio_prompt_path: 'ref3.wav',
+                    audio_prompt_path: 'female1.wav',
                     add_diacritics: diacriticsCheckbox.checked
                 }
             };
